@@ -48,6 +48,9 @@ while f == 1:
         x = indexes[s][x][1]
         y = indexes[s][old_x][0]
 
+def time_printing(word):
+    for i in word: 
+    
         
     
     
