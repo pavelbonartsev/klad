@@ -1,60 +1,79 @@
-import time as t, os
-x, f, y, coins, s, ind  = 0, 1, 1, 100000, "", 0
-weight = [2, 1.3]
-current = [55, 32]
-name = ["Лопата", "Металлоискатель"]
-coin = [1000, 5000]
-replics = {"1": ["Привет! Как дела?", "Бывает", "Ура!", "f:Наш робот определил, что у вас хорошее настроение."],
-           "2": ["", "Я рад!", "Жаль.", "f:Наш робот определил, что у вас плохое настроение."]}
-questions = {"1": ["Плохо.", "Точно плохое?", "А вдруг хорошее?"], #Вопросы либо же функции.
-             "2": ["Хорошо.", "Точно хорошее?", "А вдруг плохое?"]}
-indexes = {"1": [[1, 1], [1, 2], [1, 0]],           #Никто не говорил, что мы будем продвигаться по сюжету последовательно. Здесь данные, которые в зависимости от выбранного вопроса перенеправляют либо далее по сюжету, либо возвращают назад по сюжету либо оставляют на текущем месте.
-           "2": [[2, 1], [2, 2], [2, 3]]}
-
-def clear():
-    os.system("clear")
-
-def word_prof_righting(inp):
-    numb = int(inp.split()[0])
-    word = inp.split()[1]
-    for i in name:
-        if word.lower() == i.lower():
-            ind = i
-            break
-    if ind != 0:
-        coin -= numb * coin[ind]
-        current[ind] -= numb
-    ind = 0
-
+import os, time as t, random
+i, fl, tp = 0, 0, [str, int, list]
+clear = lambda: os.system('cls')
 def store():
-    print("Денег", coins)
-    for i in range(len(name)):
-        print(name[i] + ", вес " + str(weight[i]) + " кг, цена " + str(coin[i]) + " рублей, на данный момент доступно " + str(current[i]) + ".")
-    word_prof_righting(input())
+    global coins
+    sale_flag, sale_string, s, es, choice = 0, "", 0, 0, ""
+    while choice != "Хватит":
+        clear()
+        print("Денег: " + str(coins), end="\n\n")
+        for i in range(len(products)):
+            if sale_flag == 0 and available[i] > 0:
+                s = float(random.choices([0, 0.1, 0.2, 0.3, 0.4, 0.5], weights = [90, 3, 3, 2, 1, 1])[0])
+                if s == 0.0:
+                    sale_string = ""
+                else:
+                    sale_string = " (скидка " + str(int(s * 100.0)) + "%)"
+                    sale_flag = 1
+            if i == 0:
+                print("Товар" + " " * (len(max(products, key=len)) - len("Товар") + 20)  + "Стоимость" + " " * 15 + "Осталось", end="\n\n")
+            print(products[i] + " " * (len(max(products, key=len)) - len(products[i]) + 20) + str(int(cost[i] * (1.0 - s))) + sale_string + " " * \
+            (len(str(max(cost))) - len(str(int(cost[i] * (1.0 - s)))) + 20 - len(sale_string)) + str(available[i]) + " " * (len(str(max(available))) - \
+            len(str(available[i])) + 5) + "(очень мало в наличии!)" * (available[i] <= 10 and available[i] > 0) + "(нет в наличии!)" * (available[i] == 0))
+            sale_string = ""
+            if s != 0:
+                es = s
+            s = 0
+        print()
+        print("Вводите в формате - количество позиций товара - пробел - наименование товара.")
+        choice = input()
+        if choice == "Хватит":
+            break
+        quant, good = int(choice.split()[0]), choice.split()[1]
+        for i in range(len(products)):
+            if products[i].lower() == good.lower():
+                if quant > available[i]:
+                    if coins >=  available[i] * (int(cost[i] * (1.0 - es))):
+                        coins -= available[i] * (int(cost[i] * (1.0 - es)))
+                        print("Извините, у нас только " + str(available[i]) + " позиций данного товара, их вам и продаем.")
+                        t.sleep(1.5)
+                        available[i] = 0
+                    else:
+                        print("Недостаточно денег.")
+                        t.sleep(1.5)
+                else:
+                    if coins >=  quant * (int(cost[i] * (1.0 - es))):
+                        coins -=  quant * (int(cost[i] * (1.0 - es)))
+                        available[i] -= quant
+                    else:
+                        print("Недостаточно денег.")
+                        t.sleep(1.5)
+                es = 0
+    clear()
+products = ["Металлоискатель", "Фонарик", "Лопата", "Водамрюашуфкшукфвааывпфкпкупук"]
+available = [4, 11, 113, 55]
+cost, coins = [4000, 1000, 500, 100], 20000
 
-while f == 1:
-    if replics[str(y)][x][0:2] == "f:":
-        if f != 0:
-            print(replics[str(y)][x][2:])
-            print("ПОЗДРАВЛЯЕМ! ВЫ ПРОШЛИ КВЕСТ.")
-            f = 0
-    else:
-        print(replics[str(y)][x])
-    if f == 1:
-        for i in range(1, len(questions) + 1):
-            if questions[str(i)][x] == "":
-                break
-            print(str(i) + ". " + questions[str(i)][x])
-        s = input()
-        old_x = x
-        x = indexes[s][x][1]
-        y = indexes[s][old_x][0]
+replies = ["Итак, наш герой летним вечером прогуливается по побережью. Он гуляет здесь почти каждый день (и зимой тоже), но только сейчас он обратил внимание на одиноко стоящую \
+сосну и особенно на большое дупло в ней. Подойдя к дереву ближе, он заметил чуть выглядывающее из отверстия горлышко бутылки. Оно наглухо залито сургучом, а цвет \
+стекла бутылки такой темный, что можно было только потрясти, чтобы хоть примерно определить ее содержимое (что наш герой и сделал). Конечно, если она была бы пуста, \
+наш герой свернул бы на лесную тропку и пошёл бы дальше неспешно прогуливаться. Но нет, в бутыли что-то было, то ли бумажка, то ли нечто похожее на бумажку. Так \
+бутылка еще оказалась сделанной из небьющегося стекла. Конечно, желание гулять у нашего героя пропало, схватив бутылку \
+(и чуть не выронив ее в дельту моря), он побежал к своему маленькому домику.", "На троечку или на двоечку?", "На пятерочку или четверочку?", "Терпимо",
+            "Ужас!", "Неплохо!", "Прекрасно!"]
 
-def time_printing(word, tm):
-    for i in word: 
-        print(i, end="")
-        t.sleep(tm)
-    
-        
-    
-    
+links1 = [0, 1, 2, "f", "f", "f", "f"]
+qu_fu = [[store, "hi"], ["На двоечку", "На троечку"], ["На пятерочку", "На четверочку"]] #qu_fu - сокращенно от questions and functions
+links2 = [[1, 2], [4, 3], [6, 5]]
+while fl != 1:
+    print(replies[i])
+    if input() == "":
+        if links1[i] == "f":
+            fl == 1
+            break
+        for j in range(0, len(qu_fu[links1[i]])):
+            if type(qu_fu[links1[i]][j]) in tp:
+                print(str(j + 1) + ".", qu_fu[links1[i]][j])
+            else:
+                qu_fu[links1[i]][j]()
+        i = links2[i][int(input()) - 1]
