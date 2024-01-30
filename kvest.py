@@ -1,6 +1,16 @@
 import os, time as t, random
 i, fl, tp = 0, 0, [str, int, list]
 clear = lambda: os.system('cls')
+def loter_bil():
+    r, ind = int(random.choices([0, 1], weights = [99, 1])[0], -1
+    if r == 1:
+        ind = random.randint(0, 19)
+    for i in range(20):
+        print("Билет " + str(i + 1) + "... ", end = "")
+        if i != ind:
+            print("Ничего.")
+        else:
+            print("Найдено!")
 def store():
     global coins
     sale_flag, sale_string, s, es, choice = 0, "", 0, 0, ""
@@ -36,6 +46,8 @@ def store():
                     if coins >=  available[i] * (int(cost[i] * (1.0 - es))):
                         coins -= available[i] * (int(cost[i] * (1.0 - es)))
                         print("Извините, у нас только " + str(available[i]) + " позиций данного товара, их вам и продаем.")
+                        if products[i] == "Лотерейный билет, по 20 шт.":
+                            loter_bil()
                         t.sleep(1.5)
                         available[i] = 0
                     else:
@@ -45,14 +57,16 @@ def store():
                     if coins >=  quant * (int(cost[i] * (1.0 - es))):
                         coins -=  quant * (int(cost[i] * (1.0 - es)))
                         available[i] -= quant
+                        if products[i] == "Лотерейный билет, по 20 шт.":
+                            loter_bil()
                     else:
                         print("Недостаточно денег.")
                         t.sleep(1.5)
                 es = 0
     clear()
-products = ["Металлоискатель", "Фонарик", "Лопата", "Водамрюашуфкшукфвааывпфкпкупук"]
+products = ["Металлоискатель", "Фонарик", "Лопата", "Лотерейный билет, по 20 шт."]
 available = [4, 11, 113, 55]
-cost, coins = [4000, 1000, 500, 100], 20000
+cost, coins = [4000, 1000, 500, 400], 20000
 
 replies = ["Итак, наш герой летним вечером прогуливается по побережью. Он гуляет здесь почти каждый день (и зимой тоже), но только сейчас он обратил внимание на одиноко стоящую \
 сосну и особенно на большое дупло в ней. Подойдя к дереву ближе, он заметил чуть выглядывающее из отверстия горлышко бутылки. Оно наглухо залито сургучом, а цвет \
