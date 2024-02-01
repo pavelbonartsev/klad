@@ -1,10 +1,10 @@
-import os    
+import os #Импортируем библиотеки для работы
 import time as t 
 import random 
 import datetime
 
 
-def clear():  
+def clear(): #Чистка консоли  
     os.system('cls')
 
 
