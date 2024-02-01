@@ -94,14 +94,15 @@ def store():
                     sale_string = " (скидка " + str(int(s * 100.0)) + "%)"
                     sale_flag = 1
             if i == 0:
-                print("Товар" + " " * (len(max(products, key=len)) - len("Товар") + 20) + 
+                print(
+                    "Товар" + " " * (len(max(products, key=len)) - len("Товар") + 20) + 
                     "Стоимость" + " " * 15 + "Осталось", end="\n\n")
-            print(products[i] + " " * (len(max(products, key=len)) - len(products[i]) + 20) + 
-                str(int(cost[i] * 
-                (1.0 - s))) + sale_string + " " * 
+            print(
+                products[i] + " " * (len(max(products, key=len)) - len(products[i]) + 20) + 
+                str(int(cost[i] * (1.0 - s))) + sale_string + " " * 
                 (len(str(max(cost))) - len(str(int(cost[i] * (1.0 - s)))) + 20 - len(sale_string)) + str(available[i]) + 
-                " " * (len(str(max(available))) - 
-                len(str(available[i])) + 5) + "(очень мало в наличии!)" * (available[i] <= 10 and available[i] > 0) + 
+                " " * (len(str(max(available))) - len(str(available[i])) + 5) + 
+                "(очень мало в наличии!)" * (available[i] <= 10 and available[i] > 0) + 
                 "(нет в наличии!)" * (available[i] == 0))
             sale_string = ""
             if s != 0:
